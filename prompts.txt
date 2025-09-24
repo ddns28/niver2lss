@@ -1217,3 +1217,4 @@ crie isso de uma forma que reproduza o audio das musicas
 faça ele tocar diana de one direction, e arrume o botão de play e pause
 troque essa imagem pela que eu mandei
 troque essa imagem pela que eu mandei
+troque pela imagem q mandei
