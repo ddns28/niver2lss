@@ -15,6 +15,23 @@
             font-family: 'Poppins', sans-serif;
             background-color: #fff5f5;
             color: #333;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        body.dark-mode .bg-white {
+            background-color: #2d2d2d !important;
+        }
+        body.dark-mode .text-gray-700 {
+            color: #d1d1d1 !important;
+        }
+        body.dark-mode .text-gray-600 {
+            color: #b0b0b0 !important;
+        }
+        body.dark-mode .bg-purple-50 {
+            background-color: #2a1a3a !important;
         }
         .title-font {
             font-family: 'Pacifico', cursive;
@@ -39,6 +56,13 @@
         .polaroid:hover {
             transform: rotate(0deg) scale(1.05);
         }
+        .carousel-container {
+            width: 100%;
+        }
+        .carousel-slides {
+            display: flex;
+            width: 100%;
+        }
         .music-card {
             transition: all 0.3s ease;
             background: rgba(255,255,255,0.8);
@@ -50,6 +74,13 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <!-- Dark Mode Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="darkModeToggle" class="p-2 rounded-full bg-white shadow-lg">
+            <i data-feather="moon" class="text-gray-700"></i>
+        </button>
+    </div>
+
     <!-- Hero Section -->
     <section class="relative h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-100 opacity-90"></div>
@@ -88,41 +119,132 @@
             <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-600 mb-12">Galeria</h2>
             <p class="text-center text-gray-600 mb-12">Algumas fotos aleatórias por que não sabia o que colocar 👍</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Gallery Item 1 -->
-                <div class="polaroid">
-                    <img src="https://framerusercontent.com/images/6I3YgR5CrSi8DD287tF6pkUo.png?width=801&height=800" 
-                         alt="Gallery Image" 
-                         class="w-full h-64 object-cover">
-                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
+            <div class="relative">
+                <button class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition" onclick="prevSlide()">
+                    <i data-feather="chevron-left" class="text-purple-600"></i>
+                </button>
+                
+                <div class="carousel-container overflow-hidden">
+                    <div class="carousel-slides flex transition-transform duration-500">
+                        <!-- Slide 1 -->
+                        <div class="w-full flex-shrink-0 px-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231932474.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">O kailer fazendo o L</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231909161.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">Luvinhas acabando de acordar e você toda alegre</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231950598.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">a melhor foto do luvas</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231958106.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">o dedinho da galera</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 2 -->
+                        <div class="w-full flex-shrink-0 px-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_232016117.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">My burrito</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_232027411.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">saudades do silvão</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231942235.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">você pegou meu celular e ficou tirando foto com geral</p>
+                                </div>
+                                <div class="polaroid">
+                                    <img src="https://huggingface.co/spaces/ddns/niver2lss/resolve/main/images/imagem_2025-09-23_231920393.png" 
+                                         alt="Gallery Image" 
+                                         class="w-full h-64 object-cover">
+                                    <p class="text-center mt-2 text-gray-600">eu nem vi você pegando meu celular e tirando essa foto</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Gallery Item 2 -->
-                <div class="polaroid">
-                    <img src="https://framerusercontent.com/images/Yz1Xef0PA7Yd1l8isDQewz1rP4.png?scale-down-to=512&width=801&height=801" 
-                         alt="Gallery Image" 
-                         class="w-full h-64 object-cover">
-                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
-                </div>
-                
-                <!-- Gallery Item 3 -->
-                <div class="polaroid">
-                    <img src="https://framerusercontent.com/images/mw108IHGLfFTPoEcM0TVqBnsC1s.png?width=1080&height=1078" 
-                         alt="Gallery Image" 
-                         class="w-full h-64 object-cover">
-                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
-                </div>
-                
-                <!-- Gallery Item 4 -->
-                <div class="polaroid">
-                    <img src="https://framerusercontent.com/images/Gsn5YLr3eiNif1mo0lzUJLM6r5k.jpg?width=1200&height=1200" 
-                         alt="Gallery Image" 
-                         class="w-full h-64 object-cover">
-                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
-                </div>
+                <button class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition" onclick="nextSlide()">
+                    <i data-feather="chevron-right" class="text-purple-600"></i>
+                </button>
+            </div>
+            
+            <div class="flex justify-center mt-6 space-x-2">
+                <button class="w-3 h-3 rounded-full bg-purple-300 hover:bg-purple-600 transition" onclick="goToSlide(0)"></button>
+                <button class="w-3 h-3 rounded-full bg-purple-300 hover:bg-purple-600 transition" onclick="goToSlide(1)"></button>
             </div>
         </div>
     </section>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slides > div');
+        const totalSlides = slides.length;
+        
+        function updateCarousel() {
+            const carousel = document.querySelector('.carousel-slides');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update active dot
+            document.querySelectorAll('.flex.justify-center button').forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.remove('bg-purple-300');
+                    dot.classList.add('bg-purple-600');
+                } else {
+                    dot.classList.remove('bg-purple-600');
+                    dot.classList.add('bg-purple-300');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+        
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCarousel();
+            feather.replace();
+        });
+    </script>
 
     <!-- Music Section -->
     <section class="py-16 px-4" data-aos="fade-up">
@@ -133,16 +255,22 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Music Card 1 -->
                 <div class="music-card rounded-xl overflow-hidden shadow-md">
-                    <div class="flex p-4">
+                    <div class="flex p-4 hovered-element">
                         <img src="https://framerusercontent.com/images/7GtA77znGSVQh3LduvxwQnLBU.png?width=225&height=225" 
                              alt="One Direction" 
                              class="w-24 h-24 rounded-lg object-cover">
-                        <div class="ml-4">
+                        <div class="ml-4 hovered-element">
                             <h3 class="font-bold text-lg">One Direction</h3>
                             <p class="text-gray-600">Diana</p>
-                            <div class="mt-2 flex items-center">
-                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
-                                <span class="text-sm text-gray-500">0:00 / 3:04</span>
+                            <div class="mt-2 flex items-center hovered-element">
+                                <audio id="audio1" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+                                <button onclick="togglePlay('audio1', 'playBtn1', 'progress1')" class="mr-2">
+                                    <svg id="playBtn1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play-circle text-pink-500">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                    </svg>
+                                </button>
+                                <span id="progress1" class="text-sm text-gray-500">0:00 / 3:04</span>
                             </div>
                         </div>
                     </div>
@@ -150,16 +278,22 @@
                 
                 <!-- Music Card 2 -->
                 <div class="music-card rounded-xl overflow-hidden shadow-md">
-                    <div class="flex p-4">
+                    <div class="flex p-4 hovered-element">
                         <img src="https://framerusercontent.com/images/7GtA77znGSVQh3LduvxwQnLBU.png?width=225&height=225" 
                              alt="Twenty One Pilots" 
                              class="w-24 h-24 rounded-lg object-cover">
-                        <div class="ml-4">
+                        <div class="ml-4 hovered-element">
                             <h3 class="font-bold text-lg">Twenty One Pilots</h3>
                             <p class="text-gray-600">Level of Concern</p>
-                            <div class="mt-2 flex items-center">
-                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
-                                <span class="text-sm text-gray-500">0:00 / 3:42</span>
+                            <div class="mt-2 flex items-center hovered-element">
+                                <audio id="audio2" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+                                <button onclick="togglePlay('audio2', 'playBtn2', 'progress2')" class="mr-2">
+                                    <svg id="playBtn2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play-circle text-pink-500">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                    </svg>
+                                </button>
+                                <span id="progress2" class="text-sm text-gray-500">0:00 / 3:42</span>
                             </div>
                         </div>
                     </div>
@@ -167,16 +301,22 @@
                 
                 <!-- Music Card 3 -->
                 <div class="music-card rounded-xl overflow-hidden shadow-md">
-                    <div class="flex p-4">
+                    <div class="flex p-4 hovered-element">
                         <img src="https://framerusercontent.com/images/OJTYxeXhdI7yeVPjppa8lhlSc.png?width=620&height=480" 
                              alt="Morada" 
                              class="w-24 h-24 rounded-lg object-cover">
-                        <div class="ml-4">
+                        <div class="ml-4 hovered-element">
                             <h3 class="font-bold text-lg">Morada</h3>
                             <p class="text-gray-600">Emaús</p>
-                            <div class="mt-2 flex items-center">
-                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
-                                <span class="text-sm text-gray-500">0:00 / 4:15</span>
+                            <div class="mt-2 flex items-center hovered-element">
+                                <audio id="audio3" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
+                                <button onclick="togglePlay('audio3', 'playBtn3', 'progress3')" class="mr-2">
+                                    <svg id="playBtn3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play-circle text-pink-500">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                    </svg>
+                                </button>
+                                <span id="progress3" class="text-sm text-gray-500">0:00 / 4:15</span>
                             </div>
                         </div>
                     </div>
@@ -185,7 +325,7 @@
         </div>
     </section>
 
-    <!-- Game Section -->
+    <!-- Tic Tac Toe Game Section -->
     <section class="py-16 px-4 bg-purple-50" data-aos="fade-up">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-4xl font-bold text-purple-600 mb-4">Games</h2>
@@ -194,36 +334,353 @@
             <div class="bg-white rounded-xl shadow-xl p-8 max-w-md mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <div class="text-left">
-                        <p class="text-sm text-gray-500">BPM</p>
-                        <p class="font-bold text-xl">120</p>
+                        <p class="text-sm text-gray-500">Player</p>
+                        <p class="font-bold text-xl text-blue-500">O (2L's)</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-gray-500">Vol:</p>
-                        <p class="font-bold text-xl">2</p>
+                        <p class="text-sm text-gray-500">Score</p>
+                        <p class="font-bold text-xl">0 - 0</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">loop</p>
-                        <p class="font-bold text-xl">s</p>
+                        <p class="text-sm text-gray-500">AI</p>
+                        <p class="font-bold text-xl text-pink-500">X</p>
                     </div>
                 </div>
                 
                 <div class="game-board bg-gray-100 rounded-lg p-4 mb-6">
-                    <div class="grid grid-cols-3 gap-2 mb-2">
-                        <div class="bg-white rounded h-16 flex items-center justify-center">O-0</div>
-                        <div class="bg-white rounded h-16 flex items-center justify-center">X-0</div>
-                        <div class="bg-white rounded h-16 flex items-center justify-center">SCORE: 0</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="0"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="1"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="2"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="3"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="4"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="5"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="6"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="7"></div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center text-2xl cursor-pointer hover:bg-gray-50 cell" data-index="8"></div>
                     </div>
                 </div>
                 
-                <p class="text-sm text-gray-500 mb-4">Arrow Keys / Touch to Move</p>
-                <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition">
-                    Jogar
-                </button>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-gray-500">Click to play (O = 2L's, X = AI)</p>
+                    <button id="resetGame" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-full transition text-sm">
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const cells = document.querySelectorAll('.cell');
+                    const resetBtn = document.getElementById('resetGame');
+                    const scoreDisplay = document.querySelector('.flex.justify-between.items-center.mb-6 .text-center .font-bold');
+                    
+                    let board = Array(9).fill(null);
+                    let currentPlayer = 'O';
+                    let scores = { O: 0, X: 0 };
+                    let gameActive = true;
+                    
+                    const winningCombos = [
+                        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                        [0, 4, 8], [2, 4, 6]             // diagonals
+                    ];
+                    
+                    function checkWinner() {
+                        for (let combo of winningCombos) {
+                            const [a, b, c] = combo;
+                            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                                return board[a];
+                            }
+                        }
+                        return board.includes(null) ? null : 'tie';
+                    }
+                    
+                    function makeAIMove() {
+                        // Simple AI: try to win, block player, then random
+                        let bestMove = null;
+                        
+                        // Try to win
+                        for (let i = 0; i < 9; i++) {
+                            if (!board[i]) {
+                                board[i] = 'X';
+                                if (checkWinner() === 'X') {
+                                    bestMove = i;
+                                    board[i] = null;
+                                    break;
+                                }
+                                board[i] = null;
+                            }
+                        }
+                        
+                        // Block player if they can win
+                        if (bestMove === null) {
+                            for (let i = 0; i < 9; i++) {
+                                if (!board[i]) {
+                                    board[i] = 'O';
+                                    if (checkWinner() === 'O') {
+                                        bestMove = i;
+                                        board[i] = null;
+                                        break;
+                                    }
+                                    board[i] = null;
+                                }
+                            }
+                        }
+                        
+                        // Take center if available
+                        if (bestMove === null && !board[4]) {
+                            bestMove = 4;
+                        }
+                        
+                        // Take a corner if available
+                        if (bestMove === null) {
+                            const corners = [0, 2, 6, 8];
+                            const availableCorners = corners.filter(i => !board[i]);
+                            if (availableCorners.length > 0) {
+                                bestMove = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                            }
+                        }
+                        
+                        // Take any available spot
+                        if (bestMove === null) {
+                            const availableSpots = board.map((spot, index) => spot === null ? index : null).filter(val => val !== null);
+                            bestMove = availableSpots[Math.floor(Math.random() * availableSpots.length)];
+                        }
+                        
+                        return bestMove;
+                    }
+                    
+                    function handleCellClick(e) {
+                        const index = parseInt(e.target.dataset.index);
+                        
+                        if (!gameActive || board[index] || currentPlayer === 'X') return;
+                        
+                        // Player move
+                        board[index] = 'O';
+                        e.target.textContent = 'O';
+                        e.target.classList.add('text-blue-500');
+                        
+                        const winner = checkWinner();
+                        if (winner) {
+                            endGame(winner);
+                            return;
+                        }
+                        
+                        currentPlayer = 'X';
+                        
+                        // AI move with slight delay
+                        setTimeout(() => {
+                            if (!gameActive) return;
+                            
+                            const aiMove = makeAIMove();
+                            if (aiMove !== null) {
+                                board[aiMove] = 'X';
+                                cells[aiMove].textContent = 'X';
+                                cells[aiMove].classList.add('text-pink-500');
+                                
+                                const winner = checkWinner();
+                                if (winner) {
+                                    endGame(winner);
+                                }
+                            }
+                            
+                            currentPlayer = 'O';
+                        }, 500);
+                    }
+                    
+                    function endGame(winner) {
+                        gameActive = false;
+                        
+                        if (winner === 'O') {
+                            scores.O++;
+                            alert('2L\'s Venceu!');
+                        } else if (winner === 'X') {
+                            scores.X++;
+                            alert('AI Venceu!');
+                        } else {
+                            alert('Empate!');
+                        }
+                        
+                        scoreDisplay.textContent = `${scores.O} - ${scores.X}`;
+                    }
+                    
+                    function resetGame() {
+                        board = Array(9).fill(null);
+                        currentPlayer = 'O';
+                        gameActive = true;
+                        
+                        cells.forEach(cell => {
+                            cell.textContent = '';
+                            cell.classList.remove('text-blue-500', 'text-pink-500');
+                        });
+                    }
+                    
+                    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+                    resetBtn.addEventListener('click', resetGame);
+                });
+            </script>
+            
+        </div>
+    </section>
+
+    <!-- Termo Game Section -->
+    <section class="py-16 px-4 bg-pink-50" data-aos="fade-up">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-pink-600 mb-4">Termo</h2>
+            <p class="text-gray-600 mb-8">Adivinhe a palavra de 5 letras</p>
+            
+            <div class="bg-white rounded-xl shadow-xl p-8 max-w-md mx-auto">
+                <div id="termo-game" class="flex flex-col items-center">
+                    <div class="text-xl font-bold mb-4">Tentativas restantes: <span id="attempts-left">5</span></div>
+                    
+                    <div class="grid gap-2 mb-6" id="termo-board">
+                        <!-- Rows will be added by JavaScript -->
+                    </div>
+                    
+                    <div class="w-full max-w-xs">
+                        <input type="text" id="termo-input" maxlength="5" 
+                               class="w-full p-3 border-2 border-gray-300 rounded-lg text-center uppercase font-bold"
+                               placeholder="Digite aqui">
+                        <button id="termo-submit" 
+                                class="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                            Tentar
+                        </button>
+                        <button id="termo-reset" 
+                                class="mt-2 w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                            Reiniciar
+                        </button>
+                    </div>
+                    
+                    <div id="termo-message" class="mt-4 font-bold text-lg"></div>
+                </div>
             </div>
             
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const words = ['ABRIR', 'AMIGO', 'BANCO', 'CAIXA', 'DADOS', 'ETAPA', 'FALAR', 
+                                  'GOSTO', 'HORAS', 'IDEIA', 'JOGOS', 'LIVRO', 'MUSIC', 'NOVOS', 
+                                  'ONTEM', 'PASTA', 'QUASE', 'RADIO', 'SABER', 'TARDE', 'UNICO', 
+                                  'VIVER', 'ZELAR', 'APPLE'];
+                    let currentWord = words[Math.floor(Math.random() * words.length)];
+                    let attempts = 5;
+                    const maxAttempts = 5;
+                    
+                    const board = document.getElementById('termo-board');
+                    const input = document.getElementById('termo-input');
+                    const submitBtn = document.getElementById('termo-submit');
+                    const resetBtn = document.getElementById('termo-reset');
+                    const messageEl = document.getElementById('termo-message');
+                    const attemptsEl = document.getElementById('attempts-left');
+                    
+                    // Initialize board
+                    function initBoard() {
+                        board.innerHTML = '';
+                        for (let i = 0; i < maxAttempts; i++) {
+                            const row = document.createElement('div');
+                            row.className = 'flex gap-2';
+                            for (let j = 0; j < 5; j++) {
+                                const cell = document.createElement('div');
+                                cell.className = 'w-12 h-12 border-2 border-gray-300 rounded flex items-center justify-center text-2xl font-bold';
+                                row.appendChild(cell);
+                            }
+                            board.appendChild(row);
+                        }
+                    }
+                    
+                    // Update board with guess
+                    function updateBoard(guess, attempt) {
+                        const row = board.children[attempt];
+                        const letters = guess.split('');
+                        
+                        for (let i = 0; i < 5; i++) {
+                            const cell = row.children[i];
+                            cell.textContent = letters[i];
+                            
+                            if (letters[i] === currentWord[i]) {
+                                cell.className = cell.className.replace('border-gray-300', '') + ' bg-green-500 text-white';
+                            } else if (currentWord.includes(letters[i])) {
+                                cell.className = cell.className.replace('border-gray-300', '') + ' bg-yellow-500 text-white';
+                            } else {
+                                cell.className = cell.className.replace('border-gray-300', '') + ' bg-gray-500 text-white';
+                            }
+                        }
+                    }
+                    
+                    // Check if word is valid (5 letters only)
+                    function isValidWord(word) {
+                        return word.length === 5 && /^[A-Z]+$/.test(word);
+                    }
+                    
+                    // Handle submit
+                    function handleSubmit() {
+                        const guess = input.value.toUpperCase().trim();
+                        
+                        if (guess.length !== 5) {
+                            messageEl.textContent = 'A palavra deve ter 5 letras!';
+                            messageEl.className = 'mt-4 font-bold text-lg text-red-500';
+                            return;
+                        }
+                        
+                        if (!isValidWord(guess)) {
+                            messageEl.textContent = 'Digite uma palavra de 5 letras!';
+                            messageEl.className = 'mt-4 font-bold text-lg text-red-500';
+                            return;
+                        }
+                        
+                        const currentAttempt = maxAttempts - attempts;
+                        updateBoard(guess, currentAttempt);
+                        attempts--;
+                        attemptsEl.textContent = attempts;
+                        
+                        if (guess === currentWord) {
+                            messageEl.textContent = 'Parabéns! Você acertou!';
+                            messageEl.className = 'mt-4 font-bold text-lg text-green-500';
+                            submitBtn.disabled = true;
+                            return;
+                        }
+                        
+                        if (attempts <= 0) {
+                            messageEl.textContent = `Fim de jogo! A palavra era: ${currentWord}`;
+                            messageEl.className = 'mt-4 font-bold text-lg text-red-500';
+                            submitBtn.disabled = true;
+                            return;
+                        }
+                        
+                        messageEl.textContent = 'Tente novamente!';
+                        messageEl.className = 'mt-4 font-bold text-lg text-yellow-500';
+                        input.value = '';
+                    }
+                    
+                    // Reset game
+                    function resetGame() {
+                        currentWord = words[Math.floor(Math.random() * words.length)];
+                        attempts = maxAttempts;
+                        attemptsEl.textContent = attempts;
+                        input.value = '';
+                        messageEl.textContent = '';
+                        messageEl.className = 'mt-4 font-bold text-lg';
+                        submitBtn.disabled = false;
+                        initBoard();
+                    }
+                    
+                    // Event listeners
+                    submitBtn.addEventListener('click', handleSubmit);
+                    resetBtn.addEventListener('click', resetGame);
+                    
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            handleSubmit();
+                        }
+                    });
+                    
+                    // Initialize
+                    initBoard();
+                });
+            </script>
+            
             <p class="mt-10 text-gray-600">
-                aproveite o seu dia<br>
-                (obs: o site ta menos pior pelo pc, recomendo acessar só por lar, vai te poupar mt dor)
+                Tente adivinhar a palavra secreta em até 5 tentativas!
             </p>
         </div>
     </section>
@@ -233,16 +690,73 @@
         <h2 class="text-3xl font-bold mb-6">FIM!!</h2>
         <img src="https://framerusercontent.com/images/VXLi6MJ3nNm8TYkpPIFdkVMQ7W0.png?width=236&height=188" 
              alt="Final Image" 
-             class="mx-auto w-32 h-auto">
-        <p class="mt-6">© 2023 Niver 2L's - Feito com  ❤️</p>
+             class="mx-auto w-64 h-auto">
+        <p class="mt-10 text-white">
+            aproveite o seu dia<br>
+            (obs: o site ta menos pior pelo pc, recomendo acessar só por lar, vai te poupar mt dor)
+        </p>
     </footer>
 
     <script>
+        // Music player functionality
+        function togglePlay(audioId, btnId, progressId) {
+            const audio = document.getElementById(audioId);
+            const btn = document.getElementById(btnId);
+            const progress = document.getElementById(progressId);
+            
+            // Pause all other audio players
+            document.querySelectorAll('audio').forEach(a => {
+                if (a.id !== audioId) {
+                    a.pause();
+                    const otherBtn = document.getElementById(`playBtn${a.id.slice(5)}`);
+                    if (otherBtn) {
+                        otherBtn.innerHTML = '<circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>';
+                    }
+                }
+            });
+            
+            if (audio.paused) {
+                audio.play();
+                btn.innerHTML = '<circle cx="12" cy="12" r="10"></circle><rect x="10" y="10" width="4" height="12" rx="1" ry="1"></rect>';
+                
+                // Update progress
+                audio.addEventListener('timeupdate', function() {
+                    const currentTime = formatTime(audio.currentTime);
+                    const duration = formatTime(audio.duration);
+                    progress.textContent = `${currentTime} / ${duration}`;
+                });
+            } else {
+                audio.pause();
+                btn.innerHTML = '<circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>';
+            }
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
         AOS.init({
             duration: 800,
             once: true
         });
         feather.replace();
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const icon = darkModeToggle.querySelector('i');
+        
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+            }
+            feather.replace();
+        });
     </script>
 </body>
 </html>

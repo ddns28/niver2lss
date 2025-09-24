@@ -1,0 +1,1219 @@
+coloque uma opção de modo escuro 
+exclua
+aumente a imagem em 50%
+aumente em 30%
+crie um jogo da velha em que ela duela contra a ia. use isso se quiser:
+
+// Interactive Tic Tac Toe game - User (O) vs AI (X) with customizable properties
+import {
+    useState,
+    useEffect,
+    useCallback,
+    startTransition,
+    type CSSProperties,
+} from "react"
+import { addPropertyControls, ControlType } from "framer"
+
+interface TicTacToeProps {
+    gridColor: string
+    playerOColor: string
+    playerXColor: string
+    hoverFillColor: string
+    backgroundColor: string
+    scoreFont: any
+    resultFont: any
+    resultBackgroundColor: string
+    resultTextColor: string
+    buttonColor: string
+    buttonTextColor: string
+    buttonFont: any
+    aiPlayerName: string
+    style?: CSSProperties
+}
+
+type Player = "O" | "X" | null
+type GameState = "playing" | "finished"
+
+/**
+ * Tic Tac Toe Game
+ *
+ * @framerIntrinsicWidth 400
+ * @framerIntrinsicHeight 500
+ *
+ * @framerSupportedLayoutWidth any-prefer-fixed
+ * @framerSupportedLayoutHeight any-prefer-fixed
+ */
+export default function TicTacToe(props: TicTacToeProps) {
+    const {
+        gridColor,
+        playerOColor,
+        playerXColor,
+        hoverFillColor,
+        backgroundColor,
+        scoreFont,
+        resultFont,
+        resultBackgroundColor,
+        resultTextColor,
+        buttonColor,
+        buttonTextColor,
+        buttonFont,
+        aiPlayerName,
+    } = props
+
+    const [board, setBoard] = useState<Player[]>(Array(9).fill(null))
+    const [gameState, setGameState] = useState<GameState>("playing")
+    const [winner, setWinner] = useState<Player | "tie" | null>(null)
+    const [scores, setScores] = useState({ O: 0, X: 0 })
+    const [hoveredCell, setHoveredCell] = useState<number | null>(null)
+
+    const checkWinner = useCallback(
+        (board: Player[]): Player | "tie" | null => {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8], // rows
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8], // columns
+                [0, 4, 8],
+                [2, 4, 6], // diagonals
+            ]
+
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern
+                if (
+                    board[a] &&
+                    board[a] === board[b] &&
+                    board[a] === board[c]
+                ) {
+                    return board[a]
+                }
+            }
+
+            if (board.every((cell) => cell !== null)) {
+                return "tie"
+            }
+
+            return null
+        },
+        []
+    )
+
+    const makeAIMove = useCallback(
+        (currentBoard: Player[]) => {
+            const availableMoves = currentBoard
+                .map((cell, index) => (cell === null ? index : null))
+                .filter((index) => index !== null) as number[]
+
+            if (availableMoves.length === 0) return currentBoard
+
+            // Simple AI strategy: try to win, then block, then random
+            const testMove = (
+                board: Player[],
+                move: number,
+                player: Player
+            ) => {
+                const testBoard = [...board]
+                testBoard[move] = player
+                return checkWinner(testBoard) === player
+            }
+
+            // Try to win
+            for (const move of availableMoves) {
+                if (testMove(currentBoard, move, "X")) {
+                    const newBoard = [...currentBoard]
+                    newBoard[move] = "X"
+                    return newBoard
+                }
+            }
+
+            // Try to block player
+            for (const move of availableMoves) {
+                if (testMove(currentBoard, move, "O")) {
+                    const newBoard = [...currentBoard]
+                    newBoard[move] = "X"
+                    return newBoard
+                }
+            }
+
+            // Take center if available
+            if (availableMoves.includes(4)) {
+                const newBoard = [...currentBoard]
+                newBoard[4] = "X"
+                return newBoard
+            }
+
+            // Take corners
+            const corners = [0, 2, 6, 8].filter((corner) =>
+                availableMoves.includes(corner)
+            )
+            if (corners.length > 0) {
+                const randomCorner =
+                    corners[Math.floor(Math.random() * corners.length)]
+                const newBoard = [...currentBoard]
+                newBoard[randomCorner] = "X"
+                return newBoard
+            }
+
+            // Random move
+            const randomMove =
+                availableMoves[
+                    Math.floor(Math.random() * availableMoves.length)
+                ]
+            const newBoard = [...currentBoard]
+            newBoard[randomMove] = "X"
+            return newBoard
+        },
+        [checkWinner]
+    )
+
+    const handleCellClick = useCallback(
+        (index: number) => {
+            if (board[index] || gameState === "finished") return
+
+            const newBoard = [...board]
+            newBoard[index] = "O"
+
+            const gameResult = checkWinner(newBoard)
+            if (gameResult) {
+                startTransition(() => {
+                    setBoard(newBoard)
+                    setWinner(gameResult)
+                    setGameState("finished")
+                    if (gameResult === "O") {
+                        setScores((prev) => ({ ...prev, O: prev.O + 1 }))
+                    }
+                })
+                return
+            }
+
+            // AI move with delay
+            startTransition(() => {
+                setBoard(newBoard)
+
+                // Add 0.2 second delay before AI makes a move
+                setTimeout(() => {
+                    const aiBoard = makeAIMove(newBoard)
+                    const aiResult = checkWinner(aiBoard)
+
+                    startTransition(() => {
+                        setBoard(aiBoard)
+                        if (aiResult) {
+                            setWinner(aiResult)
+                            setGameState("finished")
+                            if (aiResult === "X") {
+                                setScores((prev) => ({
+                                    ...prev,
+                                    X: prev.X + 1,
+                                }))
+                            }
+                        }
+                    })
+                }, 200)
+            })
+        },
+        [board, gameState, checkWinner, makeAIMove]
+    )
+
+    const resetGame = useCallback(() => {
+        startTransition(() => {
+            setBoard(Array(9).fill(null))
+            setGameState("playing")
+            setWinner(null)
+            setHoveredCell(null)
+        })
+    }, [])
+
+    const getResultMessage = () => {
+        if (winner === "O") return "2L's Vencedora!"
+        if (winner === "X") return `${aiPlayerName} Venceu!`
+        if (winner === "tie") return "Empate!"
+        return ""
+    }
+
+    const renderCell = (index: number) => {
+        const cellValue = board[index]
+        const isHovered =
+            hoveredCell === index && !cellValue && gameState === "playing"
+
+        return (
+            <div
+                key={index}
+                style={{
+                    width: "100px",
+                    height: "100px",
+                    border: `2px solid ${gridColor}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor:
+                        gameState === "playing" && !cellValue
+                            ? "pointer"
+                            : "default",
+                    fontSize: "48px",
+                    fontWeight: "bold",
+                    backgroundColor: isHovered ? hoverFillColor : "transparent",
+                    transition: "background-color 0.2s ease",
+                    color: cellValue === "O" ? playerOColor : playerXColor,
+                }}
+                onClick={() => handleCellClick(index)}
+                onMouseEnter={() => setHoveredCell(index)}
+                onMouseLeave={() => setHoveredCell(null)}
+            >
+                {cellValue}
+            </div>
+        )
+    }
+
+    if (gameState === "finished") {
+        return (
+            <div
+                style={{
+                    ...props.style,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: resultBackgroundColor,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "20px",
+                    padding: "20px",
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: "72px",
+                        color:
+                            winner === "O"
+                                ? playerOColor
+                                : winner === "X"
+                                  ? playerXColor
+                                  : resultTextColor,
+                        marginBottom: "20px",
+                    }}
+                >
+                    {winner === "tie" ? "🤝" : winner}
+                </div>
+
+                <div
+                    style={{
+                        ...resultFont,
+                        color: resultTextColor,
+                        textAlign: "center",
+                        marginBottom: "20px",
+                    }}
+                >
+                    {getResultMessage()}
+                </div>
+
+                <button
+                    style={{
+                        ...buttonFont,
+                        backgroundColor: buttonColor,
+                        color: buttonTextColor,
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "12px 24px",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                    }}
+                    onClick={resetGame}
+                >
+                    Play Again
+                </button>
+            </div>
+        )
+    }
+
+    return (
+        <div
+            style={{
+                ...props.style,
+                width: "100%",
+                height: "100%",
+                backgroundColor: backgroundColor,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "20px",
+                padding: "20px",
+            }}
+        >
+            {/* Game Grid */}
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 100px)",
+                    gridTemplateRows: "repeat(3, 100px)",
+                    gap: "0px",
+                }}
+            >
+                {Array.from({ length: 9 }, (_, index) => renderCell(index))}
+            </div>
+
+            {/* Score Board */}
+            <div
+                style={{
+                    ...scoreFont,
+                    display: "flex",
+                    gap: "40px",
+                    alignItems: "center",
+                }}
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                    }}
+                >
+                    <span
+                        style={{
+                            color: playerOColor,
+                            fontSize: "24px",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        O
+                    </span>
+                    <span>-</span>
+                    <span style={{ fontSize: "24px", fontWeight: "bold" }}>
+                        {scores.O}
+                    </span>
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                    }}
+                >
+                    <span
+                        style={{
+                            color: playerXColor,
+                            fontSize: "24px",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        X
+                    </span>
+                    <span>-</span>
+                    <span style={{ fontSize: "24px", fontWeight: "bold" }}>
+                        {scores.X}
+                    </span>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+addPropertyControls(TicTacToe, {
+    gridColor: {
+        type: ControlType.Color,
+        title: "Grid Color",
+        defaultValue: "#333333",
+    },
+    playerOColor: {
+        type: ControlType.Color,
+        title: "Player O Color",
+        defaultValue: "#0099FF",
+    },
+    playerXColor: {
+        type: ControlType.Color,
+        title: "Player X Color",
+        defaultValue: "#FF5588",
+    },
+    hoverFillColor: {
+        type: ControlType.Color,
+        title: "Hover Fill Color",
+        defaultValue: "#F5F5F5",
+    },
+    backgroundColor: {
+        type: ControlType.Color,
+        title: "Background Color",
+        defaultValue: "#FFFFFF",
+    },
+    scoreFont: {
+        type: ControlType.Font,
+        title: "Score Font",
+        defaultValue: {
+            fontSize: "18px",
+            variant: "Medium",
+            letterSpacing: "-0.01em",
+            lineHeight: "1.2em",
+        },
+        controls: "extended",
+        defaultFontType: "sans-serif",
+    },
+    resultFont: {
+        type: ControlType.Font,
+        title: "Result Font",
+        defaultValue: {
+            fontSize: "32px",
+            variant: "Bold",
+            letterSpacing: "-0.02em",
+            lineHeight: "1.1em",
+        },
+        controls: "extended",
+        defaultFontType: "sans-serif",
+    },
+    resultBackgroundColor: {
+        type: ControlType.Color,
+        title: "Result Background",
+        defaultValue: "#F5F5F5",
+    },
+    resultTextColor: {
+        type: ControlType.Color,
+        title: "Result Text Color",
+        defaultValue: "#333333",
+    },
+    buttonColor: {
+        type: ControlType.Color,
+        title: "Button Color",
+        defaultValue: "#0099FF",
+    },
+    buttonTextColor: {
+        type: ControlType.Color,
+        title: "Button Text Color",
+        defaultValue: "#FFFFFF",
+    },
+    buttonFont: {
+        type: ControlType.Font,
+        title: "Button Font",
+        defaultValue: {
+            fontSize: "16px",
+            variant: "Semibold",
+            letterSpacing: "-0.01em",
+            lineHeight: "1em",
+        },
+        controls: "extended",
+        defaultFontType: "sans-serif",
+    },
+    aiPlayerName: {
+        type: ControlType.String,
+        title: "AI Player Name",
+        defaultValue: "AI",
+    },
+})
+
+adicione essas imagens nas polaroids, faça com que elas fiquem automaticamento indo para o lado enquanto passa cada uma, adicione uma seta para ela ir manualmente para cada lado caso ela queira
+adicione o jogo termo também, use esse codigo como base, mas ele sempre tem a resposta como APPLE, use ia como no jogo da velha para criar palavras novas que atendem aos requisitos toda vez:
+
+// Wordle Password Challenge
+// User must guess the correct 5-letter word. On success, redirect to a configurable URL.
+import {
+    useState,
+    useMemo,
+    useCallback,
+    useEffect,
+    startTransition,
+} from "react"
+import {
+    addPropertyControls,
+    ControlType,
+    RenderTarget,
+    useIsStaticRenderer,
+} from "framer"
+import { motion, AnimatePresence } from "framer-motion"
+
+const defaultWord = "APPLE"
+const defaultRedirect = ""
+
+const defaultColors = {
+    correct: "#6aaa64",
+    present: "#c9b458",
+    absent: "#787c7e",
+    empty: "#d3d6da",
+    text: "#222",
+    background: "#fff",
+}
+
+const defaultFont = {
+    fontSize: 32,
+    variant: "Bold",
+    letterSpacing: "0.1em",
+    lineHeight: "1em",
+}
+
+function getLetterStatuses(guess, answer) {
+    const result = Array(5).fill("absent")
+    const answerArr = answer.split("")
+    const guessArr = guess.split("")
+    const used = Array(5).fill(false)
+    // First pass: correct
+    for (let i = 0; i < 5; i++) {
+        if (guessArr[i] === answerArr[i]) {
+            result[i] = "correct"
+            used[i] = true
+        }
+    }
+    // Second pass: present
+    for (let i = 0; i < 5; i++) {
+        if (result[i] === "correct") continue
+        for (let j = 0; j < 5; j++) {
+            if (!used[j] && guessArr[i] === answerArr[j]) {
+                result[i] = "present"
+                used[j] = true
+                break
+            }
+        }
+    }
+    return result
+}
+
+/**
+ * Passwordle
+ *
+ * @framerIntrinsicWidth 350
+ * @framerIntrinsicHeight 450
+ *
+ * @framerSupportedLayoutWidth any-prefer-fixed
+ * @framerSupportedLayoutHeight any-prefer-fixed
+ */
+export default function Passwordle(props) {
+    const {
+        word = defaultWord,
+        redirectUrl = defaultRedirect,
+        maxAttempts = 5,
+        correctColor,
+        presentColor,
+        absentColor,
+        emptyColor,
+        textColor,
+        backgroundColor,
+        font,
+        style,
+        title = "Passwordle",
+        winText = "Success Text",
+        failText = "Fail Text",
+        revealTitle = "Reveal Title",
+        openRedirectInNewTab = false,
+    } = props
+
+    const answer = word.trim().toUpperCase().slice(0, 5)
+    const [guesses, setGuesses] = useState([])
+    const [current, setCurrent] = useState("")
+    const [status, setStatus] = useState("")
+    const [error, setError] = useState("")
+
+    // Handle physical keyboard input
+    useEffect(() => {
+        if (status !== "") return
+        function onKeyDown(e) {
+            const target = RenderTarget.current()
+            if (
+                target !== RenderTarget.preview &&
+                target !== RenderTarget.canvas
+            )
+                return
+            if (e.ctrlKey || e.metaKey || e.altKey) return
+            if (guesses.length >= maxAttempts) return
+            if (e.key === "Backspace") {
+                if (current.length > 0)
+                    startTransition(() => setCurrent(current.slice(0, -1)))
+                setError("")
+            } else if (/^[a-zA-Z]$/.test(e.key)) {
+                if (current.length < 5)
+                    startTransition(() =>
+                        setCurrent(current + e.key.toUpperCase())
+                    )
+                setError("")
+            } else if (e.key === "Enter") {
+                if (current.length === 5) {
+                    if (current === answer) {
+                        startTransition(() => {
+                            setGuesses([...guesses, current])
+                            setStatus("success")
+                        })
+                        setTimeout(() => {
+                            if (typeof window !== "undefined") {
+                                if (openRedirectInNewTab) {
+                                    window.open(redirectUrl, "_blank")
+                                } else {
+                                    window.location.href = redirectUrl
+                                }
+                            }
+                        }, 800)
+                    } else {
+                        startTransition(() => setGuesses([...guesses, current]))
+                        setError("")
+                        if (guesses.length + 1 >= maxAttempts) {
+                            setStatus("fail")
+                        }
+                    }
+                    startTransition(() => setCurrent(""))
+                }
+            }
+        }
+        window.addEventListener("keydown", onKeyDown)
+        return () => window.removeEventListener("keydown", onKeyDown)
+    }, [
+        current,
+        guesses,
+        answer,
+        maxAttempts,
+        status,
+        redirectUrl,
+        openRedirectInNewTab,
+    ])
+
+    const isStatic = useIsStaticRenderer()
+    const rows = useMemo(() => {
+        const out = []
+        for (let i = 0; i < maxAttempts; i++) {
+            if (i < guesses.length) {
+                const guess = guesses[i]
+                const statuses = getLetterStatuses(guess, answer)
+                out.push({ guess, statuses, submitted: true })
+            } else if (
+                i === guesses.length &&
+                status !== "success" &&
+                status !== "fail"
+            ) {
+                out.push({
+                    guess: current.padEnd(5, " "),
+                    statuses: Array(5).fill("empty"),
+                    submitted: false,
+                })
+            } else {
+                out.push({
+                    guess: " ".repeat(5),
+                    statuses: Array(5).fill("empty"),
+                    submitted: false,
+                })
+            }
+        }
+        return out
+    }, [guesses, current, maxAttempts, answer, status])
+
+    const colorMap = {
+        correct: correctColor || defaultColors.correct,
+        present: presentColor || defaultColors.present,
+        absent: absentColor || defaultColors.absent,
+        empty: emptyColor || defaultColors.empty,
+    }
+
+    const isFixedWidth = style && style.width === "100%"
+
+    return (
+        <div
+            style={{
+                ...style,
+                background: backgroundColor || defaultColors.background,
+                color: textColor || defaultColors.text,
+                borderRadius: 8,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                padding: 24,
+                minWidth: isFixedWidth ? undefined : 435,
+                minHeight: 450,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 16,
+                position: "relative",
+                width: "100%",
+                boxSizing: "border-box",
+                height: "auto",
+            }}
+        >
+            <div
+                style={{
+                    fontWeight: 700,
+                    fontSize: 20,
+                    marginBottom: 32,
+                    ...font,
+                }}
+            >
+                {title}
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    width: "100%",
+                    maxWidth: 300,
+                    alignItems: "center",
+                }}
+            >
+                {rows.map((row, i) => (
+                    <div key={i} style={{ display: "flex", gap: 6 }}>
+                        {row.guess.split("").map((ch, j) => {
+                            // Animation: bounce in for entered letters, flip for submitted row only
+                            const isFilled =
+                                ch.trim() !== "" &&
+                                row.statuses[j] === "empty" &&
+                                !row.submitted
+                            // Only flip if row is submitted and not the current input row
+                            const shouldFlip =
+                                row.submitted && row.statuses[j] !== "empty"
+                            if (isStatic) {
+                                return (
+                                    <div
+                                        key={j}
+                                        style={{
+                                            width: 48,
+                                            height: 48,
+                                            background:
+                                                colorMap[row.statuses[j]],
+                                            color:
+                                                textColor || defaultColors.text,
+                                            borderRadius: 4,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            fontSize: 28,
+                                            fontWeight: 700,
+                                            textTransform: "uppercase",
+                                            border:
+                                                row.statuses[j] === "empty"
+                                                    ? `1.5px solid #bbb`
+                                                    : "none",
+                                            ...font,
+                                        }}
+                                        aria-label={ch.trim() ? ch : undefined}
+                                    >
+                                        {ch}
+                                    </div>
+                                )
+                            }
+                            // Only apply flip to submitted rows, not current input or empty
+                            return (
+                                <motion.div
+                                    key={j}
+                                    initial={
+                                        isFilled
+                                            ? { scale: 0.7, opacity: 0 }
+                                            : false
+                                    }
+                                    animate={
+                                        isFilled
+                                            ? {
+                                                  scale: 1,
+                                                  opacity: 1,
+                                                  transition: {
+                                                      type: "spring",
+                                                      stiffness: 400,
+                                                      damping: 20,
+                                                  },
+                                              }
+                                            : {}
+                                    }
+                                    whileInView={
+                                        shouldFlip
+                                            ? {
+                                                  rotateY: 360,
+                                                  transition: {
+                                                      duration: 0.7,
+                                                      delay: j * 0.08,
+                                                  },
+                                              }
+                                            : {}
+                                    }
+                                    style={{
+                                        width: 48,
+                                        height: 48,
+                                        background: colorMap[row.statuses[j]],
+                                        color: textColor || defaultColors.text,
+                                        borderRadius: 4,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontSize: 28,
+                                        fontWeight: 700,
+                                        textTransform: "uppercase",
+                                        border:
+                                            row.statuses[j] === "empty"
+                                                ? `1.5px solid #bbb`
+                                                : "none",
+                                        perspective: 400,
+                                        ...font,
+                                    }}
+                                    aria-label={ch.trim() ? ch : undefined}
+                                >
+                                    {ch}
+                                </motion.div>
+                            )
+                        })}
+                    </div>
+                ))}
+            </div>
+            {status === "success" && (
+                <div
+                    style={{
+                        color: colorMap.correct,
+                        fontWeight: 700,
+                        marginTop: 12,
+                    }}
+                >
+                    {winText}
+                </div>
+            )}
+            {status === "fail" && (
+                <div
+                    style={{
+                        color: colorMap.absent,
+                        fontWeight: 700,
+                        marginTop: 12,
+                    }}
+                >
+                    {failText}
+                    <br />
+                    {revealTitle}
+                    {answer}
+                </div>
+            )}
+            {error && (
+                <div style={{ color: "#d32f2f", marginTop: 8 }}>{error}</div>
+            )}
+            <div
+                style={{
+                    fontSize: 13,
+                    color: "#888",
+                    marginTop: 8,
+                    textAlign: "center",
+                }}
+            >
+                {status === "" ? (
+                    <>
+                        Guess the 5-letter password. Attempts left:{" "}
+                        {maxAttempts - guesses.length}
+                    </>
+                ) : status === "fail" ? (
+                    <button
+                        aria-label="Reset"
+                        onClick={() => {
+                            startTransition(() => {
+                                setGuesses([])
+                                setCurrent("")
+                                setStatus("")
+                                setError("")
+                            })
+                        }}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                            margin: 0,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#888",
+                        }}
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M1 4v6h6" />
+                            <path d="M3.51 9a9 9 0 1 0 2.13-3.36L1 10" />
+                        </svg>
+                    </button>
+                ) : null}
+            </div>
+        </div>
+    )
+}
+
+addPropertyControls(Passwordle, {
+    title: {
+        type: ControlType.String,
+        title: "Title",
+        defaultValue: "Termo!",
+    },
+    word: {
+        type: ControlType.String,
+        title: "Password Word",
+        defaultValue: defaultWord,
+        placeholder: "5-letter word",
+    },
+    redirectUrl: {
+        type: ControlType.String,
+        title: "Redirect URL",
+        defaultValue: defaultRedirect,
+        placeholder: "https://...",
+    },
+    openRedirectInNewTab: {
+        type: ControlType.Boolean,
+        title: "Open Redirect In",
+        enabledTitle: "New Tab",
+        disabledTitle: "Current Tab",
+        defaultValue: false,
+    },
+    maxAttempts: {
+        type: ControlType.Number,
+        title: "Max Attempts",
+        defaultValue: 5,
+        min: 3,
+        max: 10,
+        step: 1,
+    },
+    correctColor: {
+        type: ControlType.Color,
+        title: "Correct Color",
+        defaultValue: defaultColors.correct,
+    },
+    presentColor: {
+        type: ControlType.Color,
+        title: "Present Color",
+        defaultValue: defaultColors.present,
+    },
+    absentColor: {
+        type: ControlType.Color,
+        title: "Absent Color",
+        defaultValue: defaultColors.absent,
+    },
+    emptyColor: {
+        type: ControlType.Color,
+        title: "Empty Color",
+        defaultValue: defaultColors.empty,
+    },
+    textColor: {
+        type: ControlType.Color,
+        title: "Text Color",
+        defaultValue: defaultColors.text,
+    },
+    backgroundColor: {
+        type: ControlType.Color,
+        title: "Background",
+        defaultValue: defaultColors.background,
+    },
+    font: {
+        type: ControlType.Font,
+        title: "Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: defaultFont,
+    },
+    winText: {
+        type: ControlType.String,
+        title: "Success Text",
+        defaultValue: "Access Granted",
+    },
+    failText: {
+        type: ControlType.String,
+        title: "Fail Text",
+        defaultValue: "Access Denied",
+    },
+    revealTitle: {
+        type: ControlType.String,
+        title: "Reveal Title",
+        defaultValue: "Word: ",
+    },
+})
+
+o jogo da palavra invalida para qualquer palavra que não seja apple, nao da chance nem de tentar, arrume
+mova isso para debaixo do "FIM!!"
+embaixo do textinho vc coloca a imagem que te mandei com esse efeito:
+
+import { useEffect, useState, useRef, startTransition } from "react"
+import { addPropertyControls, ControlType, useIsStaticRenderer } from "framer"
+import { motion, useAnimation, useInView } from "framer-motion"
+
+interface SlitImageRevealProps {
+    image: { src: string; alt: string }
+    slitCount: number
+    revealDuration: number
+    staggerDelay: number
+    backgroundColor: string
+    style?: React.CSSProperties
+}
+
+/**
+ * Vertical Slit Image Reveal
+ *
+ * @framerSupportedLayoutWidth fixed
+ * @framerSupportedLayoutHeight fixed
+ */
+export default function SlitImageReveal(props: SlitImageRevealProps) {
+    const {
+        image = {
+            src: "https://framerusercontent.com/images/GfGkADagM4KEibNcIiRUWlfrR0.jpg",
+            alt: "Gradient 1 - Blue",
+        },
+        slitCount = 10,
+        revealDuration = 0.8,
+        staggerDelay = 0.05,
+        backgroundColor = "#000000",
+        style,
+    } = props
+
+    const containerRef = useRef<HTMLDivElement>(null)
+    const isInView = useInView(containerRef, { once: true, amount: 0.3 })
+    const controls = useAnimation()
+    const isStatic = useIsStaticRenderer()
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        if (isInView && !isStatic) {
+            startTransition(() => {
+                controls.start("visible")
+            })
+        }
+    }, [isInView, controls, isStatic])
+
+    useEffect(() => {
+        if (typeof window === "undefined") return
+
+        const checkMobile = () => {
+            startTransition(() => {
+                setIsMobile(window.innerWidth < 768)
+            })
+        }
+
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
+
+    const slits = Array.from({ length: slitCount }, (_, i) => i)
+
+    const slitVariants = {
+        hidden: { scaleY: 0 },
+        visible: (i: number) => ({
+            scaleY: 1,
+            transition: {
+                delay: i * staggerDelay,
+                duration: revealDuration,
+                ease: [0.25, 0.1, 0.25, 1.0],
+            },
+        }),
+    }
+
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                backgroundColor,
+                ...style,
+            }}
+        >
+            {isStatic ? (
+                <div
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundImage: `url(${image.src})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                />
+            ) : (
+                <div
+                    style={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                    }}
+                >
+                    {slits.map((index) => (
+                        <motion.div
+                            key={index}
+                            custom={index}
+                            variants={slitVariants}
+                            initial="hidden"
+                            animate={controls}
+                            style={{
+                                position: "relative",
+                                height: "100%",
+                                width: `${100 / slitCount}%`,
+                                overflow: "hidden",
+                                transformOrigin: "center",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: `${-100 * index}%`,
+                                    width: `${100 * slitCount}%`,
+                                    height: "100%",
+                                    backgroundImage: `url(${image.src})`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                }}
+                                aria-hidden={index !== 0}
+                            />
+                        </motion.div>
+                    ))}
+                </div>
+            )}
+            {/* Hidden image for screen readers */}
+            <img
+                src={image.src}
+                alt={image.alt}
+                style={{
+                    position: "absolute",
+                    width: 1,
+                    height: 1,
+                    opacity: 0,
+                    pointerEvents: "none",
+                }}
+            />
+        </div>
+    )
+}
+
+addPropertyControls(SlitImageReveal, {
+    image: {
+        type: ControlType.ResponsiveImage,
+        title: "Image",
+    },
+    slitCount: {
+        type: ControlType.Number,
+        title: "Slit Count",
+        defaultValue: 10,
+        min: 2,
+        max: 30,
+        step: 1,
+    },
+    revealDuration: {
+        type: ControlType.Number,
+        title: "Duration",
+        defaultValue: 0.8,
+        min: 0.2,
+        max: 3,
+        step: 0.1,
+        unit: "s",
+    },
+    staggerDelay: {
+        type: ControlType.Number,
+        title: "Stagger",
+        defaultValue: 0.05,
+        min: 0,
+        max: 0.3,
+        step: 0.01,
+        unit: "s",
+    },
+    backgroundColor: {
+        type: ControlType.Color,
+        title: "Background",
+        defaultValue: "#000000",
+    },
+})
+
+cade a imagem com o efeito?
+crie isso de uma forma que reproduza o audio das musicas
+faça ele tocar diana de one direction, e arrume o botão de play e pause
+troque essa imagem pela que eu mandei
+troque essa imagem pela que eu mandei
