@@ -1,19 +1,248 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>My static Space</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<div class="card">
-			<h1>Welcome to your static Space!</h1>
-			<p>You can modify this app directly by editing <i>index.html</i> in the Files and versions tab.</p>
-			<p>
-				Also don't forget to check the
-				<a href="https://huggingface.co/docs/hub/spaces" target="_blank">Spaces documentation</a>.
-			</p>
-		</div>
-	</body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niver 2L's</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff5f5;
+            color: #333;
+        }
+        .title-font {
+            font-family: 'Pacifico', cursive;
+        }
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite both;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .polaroid {
+            background: white;
+            padding: 1rem 1rem 3rem 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        .music-card {
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.8);
+        }
+        .music-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-100 opacity-90"></div>
+        <div class="relative z-10 text-center px-4" data-aos="fade-up">
+            <img src="https://framerusercontent.com/images/7SUdf920oW48VgcVKBw10eUONJA.png?width=321&height=317" 
+                 alt="Birthday Celebration" 
+                 class="mx-auto w-48 h-48 md:w-64 md:h-64 rounded-full object-cover border-4 border-white shadow-xl heartbeat">
+            <h1 class="title-font text-4xl md:text-6xl font-bold text-pink-600 mt-6">Niver 2L's</h1>
+            <h2 class="text-2xl md:text-4xl font-bold text-purple-600 mt-4">PARABÉNS!!!</h2>
+            <p class="text-lg md:text-xl text-gray-700 mt-2">ta veia demais slk</p>
+        </div>
+    </section>
+
+    <!-- Message Section -->
+    <section class="py-16 px-4 md:px-8 max-w-4xl mx-auto" data-aos="fade-up">
+        <div class="bg-white rounded-xl shadow-lg p-8 md:p-12">
+            <p class="text-lg md:text-xl text-gray-700 leading-relaxed">
+                Não sou muito bom com textinho, mas fiz esse site porque não sabia o que te dar. Como tô estudando uns negócios de web design, me veio a ideia de juntar o útil ao agradável: estudar e ainda te dar um presente. Aproveita o site, tentei fazer algo que você pudesse usar de forma recorrente, mas fique a vontade pra nunca mais abrir ele também.
+            </p>
+            <p class="text-lg md:text-xl text-gray-700 mt-6 leading-relaxed">
+                to escrevendo isso enquanto termino o site e isso ta feio dms, perdão pela falta de formosura dessa coisa
+            </p>
+            <p class="text-xl md:text-2xl font-bold text-pink-600 mt-8">
+                Então é isso: feliz aniversário, aproveite o seu dia e tudo de bom pra você!
+            </p>
+            <div class="mt-10 p-6 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                <p class="italic text-purple-800">"Amado, peço a Deus que tudo corra bem com você e que esteja com boa saúde, assim como vai bem a sua alma."</p>
+                <p class="text-right font-semibold text-purple-700 mt-2">3 João 1:2</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-16 px-4 bg-purple-50" data-aos="fade-up">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-600 mb-12">Galeria</h2>
+            <p class="text-center text-gray-600 mb-12">Algumas fotos aleatórias por que não sabia o que colocar 👍</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Gallery Item 1 -->
+                <div class="polaroid">
+                    <img src="https://framerusercontent.com/images/6I3YgR5CrSi8DD287tF6pkUo.png?width=801&height=800" 
+                         alt="Gallery Image" 
+                         class="w-full h-64 object-cover">
+                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="polaroid">
+                    <img src="https://framerusercontent.com/images/Yz1Xef0PA7Yd1l8isDQewz1rP4.png?scale-down-to=512&width=801&height=801" 
+                         alt="Gallery Image" 
+                         class="w-full h-64 object-cover">
+                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="polaroid">
+                    <img src="https://framerusercontent.com/images/mw108IHGLfFTPoEcM0TVqBnsC1s.png?width=1080&height=1078" 
+                         alt="Gallery Image" 
+                         class="w-full h-64 object-cover">
+                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="polaroid">
+                    <img src="https://framerusercontent.com/images/Gsn5YLr3eiNif1mo0lzUJLM6r5k.jpg?width=1200&height=1200" 
+                         alt="Gallery Image" 
+                         class="w-full h-64 object-cover">
+                    <p class="text-center mt-2 text-gray-600">2002, New York City</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Music Section -->
+    <section class="py-16 px-4" data-aos="fade-up">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-pink-600 mb-4">Musicas</h2>
+            <p class="text-center text-gray-600 mb-12">Algumas músicas que se não me engano você gostava</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Music Card 1 -->
+                <div class="music-card rounded-xl overflow-hidden shadow-md">
+                    <div class="flex p-4">
+                        <img src="https://framerusercontent.com/images/7GtA77znGSVQh3LduvxwQnLBU.png?width=225&height=225" 
+                             alt="One Direction" 
+                             class="w-24 h-24 rounded-lg object-cover">
+                        <div class="ml-4">
+                            <h3 class="font-bold text-lg">One Direction</h3>
+                            <p class="text-gray-600">Diana</p>
+                            <div class="mt-2 flex items-center">
+                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
+                                <span class="text-sm text-gray-500">0:00 / 3:04</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Music Card 2 -->
+                <div class="music-card rounded-xl overflow-hidden shadow-md">
+                    <div class="flex p-4">
+                        <img src="https://framerusercontent.com/images/7GtA77znGSVQh3LduvxwQnLBU.png?width=225&height=225" 
+                             alt="Twenty One Pilots" 
+                             class="w-24 h-24 rounded-lg object-cover">
+                        <div class="ml-4">
+                            <h3 class="font-bold text-lg">Twenty One Pilots</h3>
+                            <p class="text-gray-600">Level of Concern</p>
+                            <div class="mt-2 flex items-center">
+                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
+                                <span class="text-sm text-gray-500">0:00 / 3:42</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Music Card 3 -->
+                <div class="music-card rounded-xl overflow-hidden shadow-md">
+                    <div class="flex p-4">
+                        <img src="https://framerusercontent.com/images/OJTYxeXhdI7yeVPjppa8lhlSc.png?width=620&height=480" 
+                             alt="Morada" 
+                             class="w-24 h-24 rounded-lg object-cover">
+                        <div class="ml-4">
+                            <h3 class="font-bold text-lg">Morada</h3>
+                            <p class="text-gray-600">Emaús</p>
+                            <div class="mt-2 flex items-center">
+                                <i data-feather="play-circle" class="text-pink-500 mr-2"></i>
+                                <span class="text-sm text-gray-500">0:00 / 4:15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Section -->
+    <section class="py-16 px-4 bg-purple-50" data-aos="fade-up">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-purple-600 mb-4">Games</h2>
+            <p class="text-gray-600 mb-8">uns joguinhos pra você passar o tempo (recomendo pelo pc)</p>
+            
+            <div class="bg-white rounded-xl shadow-xl p-8 max-w-md mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="text-left">
+                        <p class="text-sm text-gray-500">BPM</p>
+                        <p class="font-bold text-xl">120</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500">Vol:</p>
+                        <p class="font-bold text-xl">2</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">loop</p>
+                        <p class="font-bold text-xl">s</p>
+                    </div>
+                </div>
+                
+                <div class="game-board bg-gray-100 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="bg-white rounded h-16 flex items-center justify-center">O-0</div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center">X-0</div>
+                        <div class="bg-white rounded h-16 flex items-center justify-center">SCORE: 0</div>
+                    </div>
+                </div>
+                
+                <p class="text-sm text-gray-500 mb-4">Arrow Keys / Touch to Move</p>
+                <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition">
+                    Jogar
+                </button>
+            </div>
+            
+            <p class="mt-10 text-gray-600">
+                aproveite o seu dia<br>
+                (obs: o site ta menos pior pelo pc, recomendo acessar só por lar, vai te poupar mt dor)
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 bg-pink-600 text-center text-white" data-aos="fade-up">
+        <h2 class="text-3xl font-bold mb-6">FIM!!</h2>
+        <img src="https://framerusercontent.com/images/VXLi6MJ3nNm8TYkpPIFdkVMQ7W0.png?width=236&height=188" 
+             alt="Final Image" 
+             class="mx-auto w-32 h-auto">
+        <p class="mt-6">© 2023 Niver 2L's - Feito com  ❤️</p>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        feather.replace();
+    </script>
+</body>
 </html>
